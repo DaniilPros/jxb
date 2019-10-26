@@ -14,5 +14,6 @@
         public User User { get; set; }
         public string InterestId { get; set; }
         public Interest Interest { get; set; }
+        public int Result { get; set; }
     }
 }
