@@ -1,4 +1,6 @@
-﻿namespace JXB.Api.Data.Model
+﻿using System.Collections.Generic;
+
+namespace JXB.Api.Data.Model
 {
     public class User
     {
@@ -7,5 +9,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
+        public IEnumerable<DUser> DUsers { get; set; }
     }
 }
