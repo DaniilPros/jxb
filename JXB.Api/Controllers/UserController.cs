@@ -7,10 +7,10 @@ namespace JXB.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public Task<UserVm> GetUser()
-        {
-            //returt user, add if not found
-        }
+        //public Task<UserVm> GetUser()
+        //{
+        //    //returt user, add if not found
+        //}
 
 
     }

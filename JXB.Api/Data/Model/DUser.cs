@@ -11,7 +11,7 @@ namespace JXB.Api.Data.Model
         public Responsibility Responsibility { get; set; }
         public string DActivityId { get; set; }
         public DActivity DActivity { get; set; }
-        public IEnumerable<DInterest> DInterests { get; set; }
+        public IEnumerable<DQuestion> DInterests { get; set; }
         public int Rating { get; set; }
     }
 }
