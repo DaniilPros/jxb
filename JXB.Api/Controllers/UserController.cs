@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
+using JXB.Api.Services;
 using JXB.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,14 +45,13 @@ namespace JXB.Api.Controllers
         {
             var user = new User
             {
-                Id = Guid.NewGuid().ToString(),
                 Email = loginRequest.Email,
                 UserName = loginRequest.Name
             };
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-
+            
             return user;
         }
     }

@@ -77,9 +77,9 @@ namespace JXB.Api.Services
                 attribute)) return 0;
             var label = attribute.Label;
             var answer = _dbContext.DQuestions.Include(item => item.Question)
-                .First(item => item.UserId == userId && item.Question.Label == label);
+                .FirstOrDefault(item => item.UserId == userId && item.Question.Label == label);
 
-            return (int)answer.Answer;
+            return (int)(answer?.Answer ?? 0);
 
         }
     }

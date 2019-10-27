@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace JXB.Api.Data.Model
 {
-    public class DUser
+    public class DUser : BaseDataModel
     {
-        public string Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public string ResponsibilityId { get; set; }

@@ -2,9 +2,8 @@
 
 namespace JXB.Api.Data.Model
 {
-    public class Activity
+    public class Activity : BaseDataModel
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int MinUsersCount { get; set; }

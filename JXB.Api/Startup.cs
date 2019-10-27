@@ -1,4 +1,6 @@
 using JXB.Api.Data;
+using JXB.Api.Services;
+using JXB.BackendML.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,11 @@ namespace JXB.Api
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ConsumeModel>();
+            services.AddScoped<IMatchUsersService, MatchUsersService>();
+            services.AddScoped<IActivityPredictionService, ActivityPredictionService>();
+
             services.AddControllers();
         }
 

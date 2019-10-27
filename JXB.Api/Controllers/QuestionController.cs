@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
+using JXB.Api.Services;
 using JXB.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +15,16 @@ namespace JXB.Api.Controllers
     public class QuestionController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IActivityPredictionService _predictionService;
+        private readonly IMatchUsersService _matchUsersService;
 
-        public QuestionController(AppDbContext context)
+        public QuestionController(AppDbContext context,
+            IActivityPredictionService predictionService,
+            IMatchUsersService matchUsersService)
         {
             _context = context;
+            _predictionService = predictionService;
+            _matchUsersService = matchUsersService;
         }
 
         [HttpGet("Get")]
@@ -24,19 +32,7 @@ namespace JXB.Api.Controllers
         {
             var questions = _context.Questions;
 
-            var result = new List<QuestionVm>();
-
-            foreach (var question in questions)
-            {
-                result.Add(new QuestionVm
-                {
-                    Id = question.Id,
-                    Option1 = question.Option1,
-                    Option2 = question.Option2
-                });
-            }
-
-            return result;
+            return questions.Select(question => new QuestionVm {Id = question.Id, Option1 = question.Option1, Option2 = question.Option2}).ToList();
         }
 
         [HttpPost("SetAnswers")]
@@ -46,7 +42,6 @@ namespace JXB.Api.Controllers
             {
                 var dQuestion = new DQuestion
                 {
-                    Id = Guid.NewGuid().ToString(),
                     UserId = request.UserId,
                     QuestionId = answer.Key,
                     Answer = answer.Value
@@ -56,6 +51,8 @@ namespace JXB.Api.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _predictionService.CreateActivityPredictionsAsync(request.UserId);
+            await _matchUsersService.CreateAvailableActivitiesAsync();
         }
     }
 }

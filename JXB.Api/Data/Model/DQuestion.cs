@@ -2,9 +2,8 @@
 
 namespace JXB.Api.Data.Model
 {
-    public class DQuestion
+    public class DQuestion : BaseDataModel
     {
-        public string Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public string QuestionId { get; set; }

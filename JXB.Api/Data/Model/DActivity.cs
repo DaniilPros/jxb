@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace JXB.Api.Data.Model
 {
-    public class DActivity
+    public class DActivity:BaseDataModel
     {
-        public string Id { get; set; }
         public string ActivityId { get; set; }
         [Required]
         public DateTimeOffset Start { get; set; }
