@@ -49,26 +49,26 @@ namespace JXB.Api.Client.Test
         //    Assert.Pass();
         //}
 
-        //[Test]
-        //public async Task SetAnswers()
-        //{
-        //    var answers = new Dictionary<string, Answer> 
-        //    {
-        //        {"7e40d914-87cb-40af-882a-7768d4e16e91", Answer.Option1 },
-        //        {"7e40d914-87cb-40af-882a-7768d4e16e92", Answer.Option2 }
-        //    };
+        [Test]
+        public async Task SetAnswers()
+        {
+            var answers = new Dictionary<string, Answer>
+            {
+                {"7e40d914-87cb-40af-882a-7768d4e16e91", Answer.Option1 },
+                {"7e40d914-87cb-40af-882a-7768d4e16e92", Answer.Option2 }
+            };
 
-        //    var answerRequest = new AnswerRequest
-        //    {
-        //        UserId = "505943f9-4e28-4ec0-b4b0-6818a59a6085",
-        //        Answers = answers
-        //    };
+            var answerRequest = new AnswerRequest
+            {
+                UserId = "1e621058-402b-4bd7-8f36-7368c9e7aa00",
+                Answers = answers
+            };
 
-        //    await client.SetQuestionResults(answerRequest);
+            await client.SetQuestionResults(answerRequest);
 
-        //    //do some testing here
-        //    Assert.Pass();
-        //}
+            //do some testing here
+            Assert.Pass();
+        }
 
         //[Test]
         //public async Task GetActivity()
@@ -93,20 +93,20 @@ namespace JXB.Api.Client.Test
         //    Assert.Pass();
         //}
 
-        [Test]
-        public async Task Rate()
-        {
-            var rateRequest = new RateRequest
-            {
-                UserId = "505943f9-4e28-4ec0-b4b0-6818a59a6085",
-                DActivityId = "", 
-                Rate = 5,
-            };
-            await client.RateActivity(rateRequest);
+        //[Test]
+        //public async Task Rate()
+        //{
+        //    var rateRequest = new RateRequest
+        //    {
+        //        UserId = "505943f9-4e28-4ec0-b4b0-6818a59a6085",
+        //        DActivityId = "", 
+        //        Rate = 5,
+        //    };
+        //    await client.RateActivity(rateRequest);
 
-            //do some testing here
-            Assert.Pass();
-        }
+        //    //do some testing here
+        //    Assert.Pass();
+        //}
     }
 
 }

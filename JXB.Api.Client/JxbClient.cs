@@ -25,7 +25,7 @@ namespace JXB.Api.Client
         public async Task<UserVm> Login(LoginRequest loginRequest)
         {
             var content = new StringContent(JsonConvert.SerializeObject(loginRequest), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_url + $"api/User/Login", content);
+            var response = await _httpClient.PostAsync(_url + $"/api/User/Login", content);
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<UserVm>(json);
         }
