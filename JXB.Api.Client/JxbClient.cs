@@ -42,6 +42,12 @@ namespace JXB.Api.Client
             await _httpClient.PostAsync(_url + $"/api/Question/SetAnswers", content);
         }
 
+        public async Task<IEnumerable<UserVm>> GetScheduledActivities()
+        {
+            var response = await _httpClient.GetStringAsync(_url + $"/api/Activity/Get");
+            return JsonConvert.DeserializeObject<IEnumerable<UserVm>>(response);
+        }
+
         public async Task<ActivityVm> GetScheduledActivityByUser(string userId)
         {
             var response = await _httpClient.GetStringAsync(_url + $"/api/Activity/GetByUser?userId={userId}");
