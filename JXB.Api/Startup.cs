@@ -1,4 +1,5 @@
 using JXB.Api.Data;
+using JXB.Api.Notification;
 using JXB.Api.Services;
 using JXB.BackendML.Model;
 using Microsoft.AspNetCore.Builder;
@@ -26,9 +27,17 @@ namespace JXB.Api
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.Configure<NotificationHubConfig>((config) =>
+            {
+                config.NotificationHub = Configuration.GetConnectionString("NotificationHub");
+                config.NotificationHubName = Configuration.GetConnectionString("NotificationHubName");
+            });
+
             services.AddScoped<ConsumeModel>();
             services.AddScoped<IMatchUsersService, MatchUsersService>();
             services.AddScoped<IActivityPredictionService, ActivityPredictionService>();
+
+            services.AddSingleton<NotificationManager>();
 
             services.AddControllers();
         }
