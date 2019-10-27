@@ -12,8 +12,8 @@ namespace JXB.Api.Data.Model
         public Responsibility Responsibility { get; set; }
         public string DActivityId { get; set; }
         public DActivity DActivity { get; set; }
-        public IEnumerable<DQuestion> DInterests { get; set; }
+
         public int Rating { get; set; }
-        public DateTimeOffset CheckInTime { get; set; }
+        public DateTimeOffset? CheckInTime { get; set; }
     }
 }

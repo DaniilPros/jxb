@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
 using JXB.BackendML.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.ML.Data;
 
 namespace JXB.Api.Services
 {
-    public class ActivityPredictionService:IActivityPredictionService
+    public class ActivityPredictionService : IActivityPredictionService
     {
         private readonly ConsumeModel _model;
         private readonly AppDbContext _dbContext;
 
-        public ActivityPredictionService(ConsumeModel model,AppDbContext dbContext)
+        public ActivityPredictionService(ConsumeModel model, AppDbContext dbContext)
         {
             _model = model;
             _dbContext = dbContext;
@@ -61,7 +62,7 @@ namespace JXB.Api.Services
 
             var output = _model.Predict(modelInput);
 
-            var result = new Dictionary<string,float>();
+            var result = new Dictionary<string, float>();
 
             for (var i = 0; i < output.Score.Length; i++)
                 result.Add($"{i + 1}", output.Score[i]);
@@ -69,16 +70,17 @@ namespace JXB.Api.Services
             return result;
         }
 
-        private float GetValue(string userId,string propertyName)
+        private int GetValue(string userId, string propertyName)
         {
             var propertyInfo = typeof(ModelInput).GetProperty(propertyName);
-            if (propertyInfo?.GetCustomAttributes(typeof(LabelAttribute), false).FirstOrDefault() is LabelAttribute attribute)
-            {
-                //get date from dbContext
-                return 0;
-            }
+            if (!(propertyInfo?.GetCustomAttributes(typeof(LabelAttribute), false).FirstOrDefault() is LabelAttribute
+                attribute)) return 0;
+            var label = attribute.Label;
+            var answer = _dbContext.DQuestions.Include(item => item.Question)
+                .First(item => item.UserId == userId && item.Question.Label == label);
 
-            return 0;
+            return (int)answer.Answer;
+
         }
     }
 }

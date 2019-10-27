@@ -11,5 +11,6 @@ namespace JXB.Api.Data.Model
         public string UserName { get; set; }
         public IEnumerable<DUser> DUsers { get; set; }
         public IEnumerable<UserActivity> UserActivities { get; set; }
+        public IEnumerable<DQuestion> DQuestions { get; set; }
     }
 }
