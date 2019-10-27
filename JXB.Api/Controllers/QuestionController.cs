@@ -17,6 +17,7 @@ namespace JXB.Api.Controllers
         private readonly AppDbContext _context;
         private readonly IActivityPredictionService _predictionService;
         private readonly IMatchUsersService _matchUsersService;
+        private static Random _random = new Random();
 
         public QuestionController(AppDbContext context,
             IActivityPredictionService predictionService,
@@ -31,6 +32,7 @@ namespace JXB.Api.Controllers
         public IEnumerable<QuestionVm> GetQuestions()
         {
             var questions = _context.Questions;
+            questions.OrderBy(x => _random.Next()).Take(7);
 
             return questions.Select(question => new QuestionVm {Id = question.Id, Option1 = question.Option1, Option2 = question.Option2}).ToList();
         }
