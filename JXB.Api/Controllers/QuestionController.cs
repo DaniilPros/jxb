@@ -17,15 +17,18 @@ namespace JXB.Api.Controllers
         private readonly AppDbContext _context;
         private readonly IActivityPredictionService _predictionService;
         private readonly IMatchUsersService _matchUsersService;
+        private readonly NotificationManager _notificationManager;
         private static Random _random = new Random();
 
         public QuestionController(AppDbContext context,
             IActivityPredictionService predictionService,
-            IMatchUsersService matchUsersService)
+            IMatchUsersService matchUsersService,
+            NotificationManager notificationManager)
         {
             _context = context;
             _predictionService = predictionService;
             _matchUsersService = matchUsersService;
+            _notificationManager = notificationManager;
         }
 
         [HttpGet("Get")]
@@ -53,8 +56,19 @@ namespace JXB.Api.Controllers
             }
 
             await _context.SaveChangesAsync();
-            await _predictionService.CreateActivityPredictionsAsync(request.UserId);
-            await _matchUsersService.CreateAvailableActivitiesAsync();
+            
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMinutes(1));
+                await _predictionService.CreateActivityPredictionsAsync(request.UserId);
+                var userIds = await _matchUsersService.CreateAvailableActivitiesAsync();
+                var devices = _notificationManager.GetDevicesForTags(userIds);
+                foreach (var d in devices)
+                {
+                    _notificationManager.SendMessage(d, _notificationManager.ConstructMessage("new"));
+                }
+            });
+            
         }
     }
 }

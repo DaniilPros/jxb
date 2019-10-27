@@ -32,11 +32,6 @@ namespace JXB.Api.Controllers
         public async Task<IActionResult> SendNotification([FromBody] NotificationRequest notificationRequest)
         {
             var devices = notificationManager.GetDevicesForTags(notificationRequest.Keys);
-            var deviceTokens = "";
-            foreach (var device in devices)
-            {
-                deviceTokens += device.Registration.Handle + " ";
-            }
 
             if (devices.Count == 0)
             {
@@ -46,7 +41,7 @@ namespace JXB.Api.Controllers
             foreach (var device in devices)
             {
                 await notificationManager.SendMessage(device,
-                    notificationManager.ConstructMessage(notificationRequest));
+                    notificationManager.ConstructMessage(notificationRequest.Message));
             }
 
             return Ok();

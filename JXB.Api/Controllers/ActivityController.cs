@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Services;
 using System.Collections.Generic;
+using JXB.Api.Notification;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace JXB.Api.Controllers
 {
@@ -16,12 +18,15 @@ namespace JXB.Api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IMatchUsersService _service;
+        private readonly NotificationManager _notificationManager;
 
         public ActivityController(AppDbContext context,
-            IMatchUsersService service)
+            IMatchUsersService service,
+            NotificationManager notificationManager)
         {
             _context = context;
             _service = service;
+            _notificationManager = notificationManager;
         }
 
         [HttpGet("GetByUser")]
@@ -63,8 +68,23 @@ namespace JXB.Api.Controllers
             if (dUser == null) throw new NullReferenceException();
 
             dUser.CheckInTime = DateTimeOffset.UtcNow;
-
             await _context.SaveChangesAsync();
+            if (dActivity.DUsers.All(x => x.CheckInTime != default))
+            {
+                var userIds = dActivity.DUsers.Select(x => x.UserId).ToList();
+                Task.Run(async () =>
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1));
+                    var devices = _notificationManager.GetDevicesForTags(userIds);
+                    foreach (var d in devices)
+                    {
+                        _notificationManager.SendMessage(d, _notificationManager.ConstructMessage("checkin"));
+                    }
+
+                });
+
+            }
+
         }
 
         [HttpPost("Rate")]
@@ -79,7 +99,21 @@ namespace JXB.Api.Controllers
 
             _context.Update(dUser);
             await _context.SaveChangesAsync();
-            await _service.CreateAvailableActivitiesAsync();
+
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMinutes(2));
+                var userIds = await _service.CreateAvailableActivitiesAsync();
+                var devices = _notificationManager.GetDevicesForTags(userIds);
+                foreach (var d in devices)
+                {
+                    _notificationManager.SendMessage(d, _notificationManager.ConstructMessage("rate"));
+                }
+            });
+
+
+
         }
     }
 }

@@ -18,10 +18,10 @@ namespace JXB.Api.Services
         {
             _context = context;
         }
-        public async Task CreateAvailableActivitiesAsync()
+        public async Task<List<string>> CreateAvailableActivitiesAsync()
         {
             var activities = await _context.Activities.ToListAsync();
-
+            var activeUsers = new List<string>();
             foreach (var activity in activities)
             {
                 var users = GetAvailableUsers();
@@ -50,9 +50,12 @@ namespace JXB.Api.Services
 
                         await _context.DUsers.AddAsync(dUser);
                         await _context.SaveChangesAsync();
+                        activeUsers.Add(selectedUser.Id);
                     }
                 }
             }
+
+            return activeUsers;
         }
 
         private IEnumerable<User> GetAvailableUsers()

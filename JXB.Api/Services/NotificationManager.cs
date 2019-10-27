@@ -127,22 +127,20 @@ namespace JXB.Api.Services
 
         }
 
-        public string ConstructMessage(NotificationRequest request)
+        public string ConstructMessage(string message)
         {
-            var notificationName = request.Message;
-
             return Newtonsoft.Json.JsonConvert.SerializeObject(new AndroidNotificationPayload()
             {
                 notification = new AndroidNotificationPayload.Notification()
                 {
                     title_loc_key = "",
-                    body_loc_key = notificationName
+                    body_loc_key = message
                 },
-                collapseKey = notificationName,
+                collapseKey = message,
                 data = new AndroidNotificationPayload.Data()
                 {
                     action = "updated",
-                    data = request.Message
+                    data = message
                 }
             });
         }
