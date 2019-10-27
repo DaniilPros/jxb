@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JXB.Model\JXB.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\JXB.BackendML.Model\JXB.BackendML.Model.csproj" />
   </ItemGroup>
 

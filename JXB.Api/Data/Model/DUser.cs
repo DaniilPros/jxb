@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JXB.Api.Data.Model
 {
@@ -13,5 +14,6 @@ namespace JXB.Api.Data.Model
         public DActivity DActivity { get; set; }
         public IEnumerable<DQuestion> DInterests { get; set; }
         public int Rating { get; set; }
+        public DateTimeOffset CheckInTime { get; set; }
     }
 }

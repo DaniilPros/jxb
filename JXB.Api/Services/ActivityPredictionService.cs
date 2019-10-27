@@ -20,6 +20,10 @@ namespace JXB.Api.Services
         public void CreateActivityPredictions(string userId)
         {
             var result = GetActivityProbabilities(userId);
+            foreach (var resultKey in result.Keys)
+            {
+                
+            }
         }
 
         public Dictionary<string, float> GetActivityProbabilities(string userId)
