@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 
 namespace JXB.Api.Services
@@ -22,27 +23,29 @@ namespace JXB.Api.Services
 
             foreach (var activity in activities)
             {
-                var users = await GetAvailableUsers();
+                var users = GetAvailableUsers();
 
-                var userActivities = await _context.UserActivities
-                    .Where(item => item.ActivityId == activity.Id && users.Any(it => item.UserId == it.Id))
-                    .OrderBy(item=>item.Probability)
-                    .Take(2)//can be another number
-                    .ToListAsync();
+                var selectedUsers = users
+                    .Where(user => user.UserActivities.Where(item => item.ActivityId == activity.Id && item.UserId == user.Id)
+                        .OrderByDescending(item => item.Probability)
+                        .Take(2)
+                        .Any(item => item.ActivityId == activity.Id))
+                    .ToList();
 
-                if (userActivities.Count >= activity.MinUsersCount)
+                if (selectedUsers.Count >= activity.MinUsersCount)
                 {
-                    var count = Math.Min(userActivities.Count, activity.MaxUsersCount);
-                    foreach (var userActivity in userActivities.Take(count))
+                    
+                    var count = Math.Min(selectedUsers.Count, activity.MaxUsersCount);
+                    foreach (var selectedUser in selectedUsers.Take(count))
                     {
                         var dActivity = new DActivity
                         {
-                            ActivityId = userActivity.ActivityId, Start = DateTimeOffset.UtcNow
+                            ActivityId = activity.Id, Start = DateTimeOffset.UtcNow
                         };
                         await _context.DActivities.AddAsync(dActivity);
                         await _context.SaveChangesAsync();
 
-                        var dUser = new DUser {UserId = userActivity.UserId, DActivityId = dActivity.ActivityId};
+                        var dUser = new DUser {UserId = selectedUser.Id, DActivityId = dActivity.ActivityId};
 
                         await _context.DUsers.AddAsync(dUser);
                         await _context.SaveChangesAsync();
@@ -51,14 +54,15 @@ namespace JXB.Api.Services
             }
         }
 
-        private async Task<List<User>> GetAvailableUsers()
+        private IEnumerable<User> GetAvailableUsers()
         {
-            return await _context.DUsers.Include(item => item.User)
+            return _context.DUsers.Include(item => item.User)
+                .Include(item => item.User.UserActivities)
                 .Include(item => item.DActivity)
                 .Where(item => item.DActivity.End == null)
+                .ToList()
                 .Select(item => item.User)
-                .Distinct()
-                .ToListAsync();
+                .Distinct();
         }
     }
 }
