@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
@@ -45,13 +46,16 @@ namespace JXB.Api.Controllers
             {
                 var dQuestion = new DQuestion
                 {
+                    Id = Guid.NewGuid().ToString(),
                     UserId = request.UserId,
                     QuestionId = answer.Key,
                     Answer = answer.Value
                 };
 
-                await _context.AddAsync(dQuestion);
+                _context.DQuestions.Add(dQuestion);
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

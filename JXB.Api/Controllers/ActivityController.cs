@@ -1,6 +1,7 @@
 ﻿using JXB.Api.Data;
 using JXB.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,11 @@ namespace JXB.Api.Controllers
         [HttpGet("GetByUser")]
         public ActivityVm GetUserActivity(string userId)
         {
-            var dActivity = _context.DUsers.Where(x => x.UserId == userId && x.DActivity.End != default).FirstOrDefault().DActivity;
+            var dUsr = _context.DUsers.Include(item=>item.DActivity).Include(item => item.DActivity.Activity).Include(item => item.DActivity.Activity.Responsibilities).FirstOrDefault(x => x.UserId == userId && x.DActivity.End != default);
+            if (dUsr == null) return null;
 
             var users = new List<UserVm>();
-            foreach (var dUser in dActivity.DUsers)
+            foreach (var dUser in dUsr.DActivity.DUsers)
             {
                 var user = new UserVm
                 {
@@ -39,10 +41,10 @@ namespace JXB.Api.Controllers
 
             return new ActivityVm
             {
-                Id = dActivity.Id,
-                Name = dActivity.Activity.Name,
-                Responsibilities = dActivity.Activity.Responsibilities.Select(x => x.Name),
-                Time = dActivity.Start,
+                Id = dUsr.DActivity.Id,
+                Name = dUsr.DActivity.Activity.Name,
+                Responsibilities = dUsr.DActivity.Activity.Responsibilities.Select(x => x.Name),
+                Time = dUsr.DActivity.Start,
                 Users = users
             };
         }
@@ -51,7 +53,10 @@ namespace JXB.Api.Controllers
         public async Task CheckIn([FromBody] CheckInRequest checkInRequest)
         {
             var dActivity = _context.DActivities.Where(x => x.ActivityId == checkInRequest.ActivityId).FirstOrDefault();
-            dActivity.DUsers.FirstOrDefault(x => x.UserId == checkInRequest.UserId).CheckInTime = DateTimeOffset.UtcNow;
+            var dUser = dActivity.DUsers.FirstOrDefault(x => x.UserId == checkInRequest.UserId);
+            if (dUser == null) throw new NullReferenceException();
+
+            dUser.CheckInTime = DateTimeOffset.UtcNow;
 
             if (dActivity.DUsers.All(x => x.CheckInTime != default)) dActivity.End = DateTimeOffset.UtcNow;
 
@@ -62,6 +67,8 @@ namespace JXB.Api.Controllers
         public async Task Rate([FromBody] RateRequest rateRequest)
         {
             var dActivity = _context.DActivities.Where(x => x.Id == rateRequest.DActivityId).FirstOrDefault();
+            if (dActivity == null) throw new NullReferenceException();
+
             dActivity.DUsers.FirstOrDefault(x => x.UserId == rateRequest.UserId).Rating = rateRequest.Rate;
 
             await _context.SaveChangesAsync();

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
@@ -18,17 +19,24 @@ namespace JXB.Api.Controllers
             _context = context;
         }
 
-        [HttpGet("Get")]
-        public async Task<UserVm> GetUser(LoginRequest loginRequest)
+        [HttpPost("Login")]
+        public async Task<UserVm> GetUser([FromBody]LoginRequest loginRequest)
         {
-            var user = _context.Users.Where(x => x.Email == loginRequest.Email).FirstOrDefault();
-            if (user == null) user = await AddUser(loginRequest);
+            var isNew = false;
+            var user = _context.Users.FirstOrDefault(x => x.Email == loginRequest.Email);
+
+            if (user == null)
+            {
+                isNew = true;
+                user = await AddUser(loginRequest);
+            }
 
             return new UserVm
             {
                 UserId = user.Id,
                 Email = user.Email,
-                Name = user.UserName
+                Name = user.UserName,
+                IsNew = isNew
             };
         }
 
@@ -36,11 +44,12 @@ namespace JXB.Api.Controllers
         {
             var user = new User
             {
+                Id = Guid.NewGuid().ToString(),
                 Email = loginRequest.Email,
                 UserName = loginRequest.Name
             };
 
-            _context.Add(user);
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
             return user;
