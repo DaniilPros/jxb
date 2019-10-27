@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Data;
@@ -34,18 +35,18 @@ namespace JXB.Api.Services
 
                 if (selectedUsers.Count >= activity.MinUsersCount)
                 {
-                    
+                    var dActivity = new DActivity
+                    {
+                        ActivityId = activity.Id,
+                        Start = DateTimeOffset.UtcNow
+                    };
+                    await _context.DActivities.AddAsync(dActivity);
+                    await _context.SaveChangesAsync();
+
                     var count = Math.Min(selectedUsers.Count, activity.MaxUsersCount);
                     foreach (var selectedUser in selectedUsers.Take(count))
                     {
-                        var dActivity = new DActivity
-                        {
-                            ActivityId = activity.Id, Start = DateTimeOffset.UtcNow
-                        };
-                        await _context.DActivities.AddAsync(dActivity);
-                        await _context.SaveChangesAsync();
-
-                        var dUser = new DUser {UserId = selectedUser.Id, DActivityId = dActivity.ActivityId};
+                        var dUser = new DUser {UserId = selectedUser.Id, DActivityId = dActivity.Id};
 
                         await _context.DUsers.AddAsync(dUser);
                         await _context.SaveChangesAsync();
@@ -56,13 +57,33 @@ namespace JXB.Api.Services
 
         private IEnumerable<User> GetAvailableUsers()
         {
-            return _context.DUsers.Include(item => item.User)
-                .Include(item => item.User.UserActivities)
-                .Include(item => item.DActivity)
-                .Where(item => item.DActivity.End == null)
-                .ToList()
-                .Select(item => item.User)
-                .Distinct();
+            return _context.Users.Include(item => item.DUsers)
+                .Include(item => item.UserActivities)
+                .Where(user => !user.DUsers.Any() ||
+                _context.DUsers.Include(item => item.DActivity)
+                .Where(item=>item.UserId==user.Id)
+                .All(item => item.DActivity != null && item.DActivity.End != null));
+                //.ToList()
+                //.Union(_context.DUsers.Include(item => item.User)
+                //.Include(item => item.User.UserActivities)
+                //.Include(item => item.DActivity)
+                //.Where(item => item.DActivity!=null&&item.DActivity.End != null)
+                //.ToList()
+                //.Select(item => item.User)
+                //.Distinct(new Comparer()));
+
+        }
+    }
+    public class Comparer : IEqualityComparer<User>
+    {
+        public bool Equals([AllowNull] User x, [AllowNull] User y)
+        {
+            return x?.Id == y?.Id;
+        }
+
+        public int GetHashCode([DisallowNull] User obj)
+        {
+            return obj.GetHashCode();
         }
     }
 }

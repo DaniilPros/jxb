@@ -49,31 +49,31 @@ namespace JXB.Api.Client.Test
         //    Assert.Pass();
         //}
 
-        [Test]
-        public async Task SetAnswers()
-        {
-            var answers = new Dictionary<string, Answer>
-            {
-                {"7e40d914-87cb-40af-882a-7768d4e16e91", Answer.Option1 },
-                {"7e40d914-87cb-40af-882a-7768d4e16e92", Answer.Option2 }
-            };
+        //[Test]
+        //public async Task SetAnswers()
+        //{
+        //    var answers = new Dictionary<string, Answer>
+        //    {
+        //        {"7e40d914-87cb-40af-882a-7768d4e16e91", Answer.Option1 },
+        //        {"7e40d914-87cb-40af-882a-7768d4e16e92", Answer.Option2 }
+        //    };
 
-            var answerRequest = new AnswerRequest
-            {
-                UserId = "1e621058-402b-4bd7-8f36-7368c9e7aa00",
-                Answers = answers
-            };
+        //    var answerRequest = new AnswerRequest
+        //    {
+        //        UserId = "1e621058-402b-4bd7-8f36-7368c9e7aa00",
+        //        Answers = answers
+        //    };
 
-            await client.SetQuestionResults(answerRequest);
+        //    await client.SetQuestionResults(answerRequest);
 
-            //do some testing here
-            Assert.Pass();
-        }
+        //    //do some testing here
+        //    Assert.Pass();
+        //}
 
         //[Test]
         //public async Task GetActivity()
         //{
-        //    var activity = await client.GetScheduledActivityByUser("53d4b3d9-57f1-49c0-a907-b27c6e14aa62");
+        //    var activity = await client.GetScheduledActivityByUser("1e621058-402b-4bd7-8f36-7368c9e7aa00");
 
         //    //do some testing here
         //    Assert.Pass();
@@ -84,7 +84,7 @@ namespace JXB.Api.Client.Test
         //{
         //    var checkinRequest = new CheckInRequest
         //    {
-        //        ActivityId = "",
+        //        ActivityId = "7e40d914-87cb-40af-882a-7768d4e16e81",
         //        UserId = "505943f9-4e28-4ec0-b4b0-6818a59a6085"
         //    };
         //    await client.CheckIn(checkinRequest);
@@ -98,9 +98,9 @@ namespace JXB.Api.Client.Test
         //{
         //    var rateRequest = new RateRequest
         //    {
-        //        UserId = "505943f9-4e28-4ec0-b4b0-6818a59a6085",
-        //        DActivityId = "", 
-        //        Rate = 5,
+        //        UserId = "1e621058-402b-4bd7-8f36-7368c9e7aa00",
+        //        DActivityId = "9f521e18-994d-4e1a-bce6-35f3a0ec7647",
+        //        Rate = 3,
         //    };
         //    await client.RateActivity(rateRequest);
 

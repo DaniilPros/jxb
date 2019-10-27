@@ -3,10 +3,10 @@ using JXB.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JXB.Api.Services;
+using System.Collections.Generic;
 
 namespace JXB.Api.Controllers
 {
@@ -27,14 +27,23 @@ namespace JXB.Api.Controllers
         [HttpGet("GetByUser")]
         public ActivityVm GetUserActivity(string userId)
         {
-            var dUsr = _context.DUsers.Include(item=>item.DActivity)
-                .Include(item => item.DActivity.Activity)
-                .Include(item => item.DActivity.Activity.Responsibilities)
-                .FirstOrDefault(x => x.UserId == userId && x.DActivity.End != default);
+            var dUsr = _context.DUsers.Include(item => item.DActivity)
+                .ThenInclude(item => item.Activity)
+                .ThenInclude(item => item.Responsibilities).Include(item => item.DActivity.DUsers)
+                .FirstOrDefault(x => x.UserId == userId && x.DActivity.End == default);
             if (dUsr == null) return null;
 
-            var users = dUsr.DActivity.DUsers
-                .Select(dUser => new UserVm {UserId = dUser.UserId, Email = dUser.User.Email, Name = dUser.User.UserName}).ToList();
+            var userIds = dUsr.DActivity.DUsers
+                .Select(x => x.UserId);
+
+            var usrs = _context.Users.Where(x => userIds.Any(y => y == x.Id));
+            var vms = new List<UserVm>();
+            
+            foreach (var u in usrs)
+            {
+                var usrVm = new UserVm { UserId = u.Id, Email = u.Email, Name = u.UserName };
+                vms.Add(usrVm);
+            }
 
             return new ActivityVm
             {
@@ -42,7 +51,7 @@ namespace JXB.Api.Controllers
                 Name = dUsr.DActivity.Activity.Name,
                 Responsibilities = dUsr.DActivity.Activity.Responsibilities.Select(x => x.Name),
                 Time = dUsr.DActivity.Start,
-                Users = users
+                Users = vms
             };
         }
 
@@ -64,9 +73,11 @@ namespace JXB.Api.Controllers
             var dActivity = _context.DActivities.Include(item=>item.DUsers).FirstOrDefault(x => x.Id == rateRequest.DActivityId);
             if (dActivity == null) throw new NullReferenceException();
 
-            dActivity.DUsers.FirstOrDefault(x => x.UserId == rateRequest.UserId).Rating = rateRequest.Rate;
-            dActivity.End = DateTimeOffset.UtcNow;
+            var dUser = dActivity.DUsers.FirstOrDefault(x => x.UserId == rateRequest.UserId);
+            dUser.Rating = rateRequest.Rate;
+            if (dActivity.DUsers.All(x => x.CheckInTime != default))dActivity.End = DateTimeOffset.UtcNow;
 
+            _context.Update(dUser);
             await _context.SaveChangesAsync();
             await _service.CreateAvailableActivitiesAsync();
         }
