@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JXB.Api.Data;
+using JXB.Api.Data.Model;
 using JXB.BackendML.Model;
 using Microsoft.ML.Data;
 
@@ -22,7 +24,12 @@ namespace JXB.Api.Services
             var result = GetActivityProbabilities(userId);
             foreach (var resultKey in result.Keys)
             {
-                
+                var userActivity = new UserActivity();
+                userActivity.Id = Guid.NewGuid().ToString("D");
+                userActivity.UserId = userId;
+                userActivity.ActivityId = _dbContext.Activities.First(item => item.Label == resultKey).Id;
+                userActivity.Probability = result[resultKey];
+
             }
         }
 

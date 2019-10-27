@@ -18,7 +18,7 @@ namespace JXB.BackendML.ConsoleApp
             ModelInput sampleData = CreateSingleDataSample(DATA_FILEPATH);
 
             // Make a single prediction on the sample data and print results
-            ModelOutput predictionResult = ConsumeModel.Predict(sampleData);
+            ModelOutput predictionResult = new ConsumeModel().Predict(sampleData);
 
             Console.WriteLine("Using model to make single prediction -- Comparing actual Col18 with predicted Col18 from sample data...\n\n");
             Console.WriteLine($"1: {sampleData.Col1}");

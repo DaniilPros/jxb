@@ -7,5 +7,6 @@
         public User User { get; set; }
         public string ActivityId { get; set; }
         public Activity Activity { get; set; }
+        public float Probability { get; set; }
     }
 }
