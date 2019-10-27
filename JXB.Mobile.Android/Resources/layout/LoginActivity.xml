@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="64dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hi5!"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="Email"
+        android:id="@+id/Email"
+        android:imeOptions="actionDone"
+        android:layout_marginTop="16dp"
+        android:inputType="textEmailAddress"/>
+    <android.support.design.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/LoginButton"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_marginTop="32dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You will be in incognito"
+        android:alpha="0.8"
+        android:layout_marginTop="32dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/Footer"/>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Loader"/>
+</LinearLayout>

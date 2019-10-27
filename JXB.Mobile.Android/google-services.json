@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "211602675503",
+    "firebase_url": "https://junction-x.firebaseio.com",
+    "project_id": "junction-x",
+    "storage_bucket": "junction-x.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211602675503:android:0e8440841d79242a36f3da",
+        "android_client_info": {
+          "package_name": "com.jxb.mobile.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211602675503-6ihmia5ctgipv690grrmbc6cs11635es.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_vug7uyW93AuzjZdJkxeQxzGvSc1F-EY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211602675503-6ihmia5ctgipv690grrmbc6cs11635es.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
