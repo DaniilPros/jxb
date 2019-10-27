@@ -17,5 +17,6 @@ namespace JXB.Api.Data
         public DbSet<DQuestion> DQuestions { get; set; }
         public DbSet<DActivity> DActivities { get; set; }
         public DbSet<Responsibility> Responsibilities { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
     }
 }

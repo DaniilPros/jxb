@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JXB.Api.Services
 {
     public interface IActivityPredictionService
     {
-        Dictionary<string, float> GetActivityProbabilities(string userId);
+        Task CreateActivityPredictionsAsync(string userId);
     }
 }

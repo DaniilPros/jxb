@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JXB.Api.Data;
 using JXB.Api.Data.Model;
 using JXB.BackendML.Model;
@@ -19,17 +20,19 @@ namespace JXB.Api.Services
             _dbContext = dbContext;
         }
 
-        public void CreateActivityPredictions(string userId)
+        public async Task CreateActivityPredictionsAsync(string userId)
         {
             var result = GetActivityProbabilities(userId);
-            foreach (var resultKey in result.Keys)
+            foreach (var userActivity in result.Keys.Select(resultKey => new UserActivity
             {
-                var userActivity = new UserActivity();
-                userActivity.Id = Guid.NewGuid().ToString("D");
-                userActivity.UserId = userId;
-                userActivity.ActivityId = _dbContext.Activities.First(item => item.Label == resultKey).Id;
-                userActivity.Probability = result[resultKey];
-
+                Id = Guid.NewGuid().ToString("D"),
+                UserId = userId,
+                ActivityId = _dbContext.Activities.First(item => item.Label == resultKey).Id,
+                Probability = result[resultKey]
+            }))
+            {
+                _dbContext.UserActivities.Add(userActivity);
+                await _dbContext.SaveChangesAsync();
             }
         }
 
