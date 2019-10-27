@@ -4,14 +4,16 @@ using JXB.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JXB.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191026234433_ModelMigration5")]
+    partial class ModelMigration5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,9 +27,6 @@ namespace JXB.Api.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Label")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxUsersCount")
@@ -104,9 +103,6 @@ namespace JXB.Api.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTimeOffset>("CheckInTime")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("DActivityId")
                         .HasColumnType("nvarchar(450)");
 
@@ -134,9 +130,6 @@ namespace JXB.Api.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Label")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Option1")
                         .HasColumnType("nvarchar(max)");
@@ -192,26 +185,6 @@ namespace JXB.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("JXB.Api.Data.Model.UserActivity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ActivityId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserActivity");
-                });
-
             modelBuilder.Entity("JXB.Api.Data.Model.DActivity", b =>
                 {
                     b.HasOne("JXB.Api.Data.Model.Activity", "Activity")
@@ -226,7 +199,7 @@ namespace JXB.Api.Migrations
                         .HasForeignKey("DUserId");
 
                     b.HasOne("JXB.Api.Data.Model.Question", "Question")
-                        .WithMany("DQuestions")
+                        .WithMany("DInterests")
                         .HasForeignKey("QuestionId");
 
                     b.HasOne("JXB.Api.Data.Model.User", "User")
@@ -254,17 +227,6 @@ namespace JXB.Api.Migrations
                     b.HasOne("JXB.Api.Data.Model.Activity", "Activity")
                         .WithMany("Responsibilities")
                         .HasForeignKey("ActivityId");
-                });
-
-            modelBuilder.Entity("JXB.Api.Data.Model.UserActivity", b =>
-                {
-                    b.HasOne("JXB.Api.Data.Model.Activity", "Activity")
-                        .WithMany("UserActivities")
-                        .HasForeignKey("ActivityId");
-
-                    b.HasOne("JXB.Api.Data.Model.User", "User")
-                        .WithMany("UserActivities")
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

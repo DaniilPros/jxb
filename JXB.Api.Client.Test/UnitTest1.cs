@@ -12,7 +12,7 @@ namespace JXB.Api.Client.Test
         [Test]
         public void Test1()
         {
-            var client = new JxbClient();
+            var client = new JxbClient("");
 
             //do some testing here
             Assert.Pass();

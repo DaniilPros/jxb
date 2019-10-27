@@ -1,12 +1,7 @@
-﻿namespace JXB.Api.Data.Model
-{
-    public enum Answer
-    {
-        Default,
-        First,
-        Second
-    }
+﻿using JXB.Model;
 
+namespace JXB.Api.Data.Model
+{
     public class DQuestion
     {
         public string Id { get; set; }
